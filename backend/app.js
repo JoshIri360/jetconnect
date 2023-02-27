@@ -3,6 +3,8 @@ const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
+const cookieParser = require('cookie-parser');
+
 
 const app = express();
 
@@ -39,6 +41,9 @@ app.use(mongoSanitize());
 
 //Data sanitization against XXS
 app.use(xss());
+
+//Cookie Parser for adding JWT to header
+app.use(cookieParser());
 
 //Log Requests
 app.use((req, res, next) => {

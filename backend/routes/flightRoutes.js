@@ -4,24 +4,18 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.use(authController.protect);
+router.use(authController.restrictTo("admin"));
+
 router
   .route("/")
   .get(flightController.getAllFlights)
-  .post(
-    authController.restrictTo("admin"),
-    flightController.createFlight
-  );
+  .post(flightController.createFlight);
 
 router
   .route("/:id")
   .get(flightController.getFlight)
-  .patch(
-    authController.restrictTo("admin"),
-    flightController.updateFlight
-  )
-  .delete(
-    authController.restrictTo("admin"),
-    flightController.deleteFlight
-  );
+  .patch(flightController.updateFlight)
+  .delete(flightController.deleteFlight);
 
 module.exports = router;

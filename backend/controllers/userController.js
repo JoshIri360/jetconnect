@@ -1,51 +1,93 @@
 const User = require("../models/userModel");
+const catchAsync = require("../utils/catchAsync");
 
-exports.registerUser = async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: { user },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
 };
 
-exports.loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const allUsers = await User.find();
 
-    // Check if email and password are provided
-    if (!email || !password) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Please provide an email and password",
-      });
-    }
+  res.status(201).json({
+    status: "success",
+    results: allUsers.length,
+    data: {
+      data: allUsers,
+    },
+  });
+});
 
-    // Check if user exists and password is correct
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !(await user.checkPassword(password, user.password))) {
-      return res.status(401).json({
-        status: "fail",
-        message: "Incorrect email or password",
-      });
-    }
+exports.createUser = catchAsync(async (req, res, next) => {
+  const user = await User.create(req.body);
 
-    // Log the user in
-    const token = user.generateAuthToken();
-    res.status(200).json({
-      status: "success",
-      data: { token },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+  res.status(201).json({
+    status: "success",
+    data: {
+      data: user,
+    },
+  });
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  const filteredObjects = filterObj(req.body, "name", "email");
+
+  const updatedUser = User.findByIdAndUpdate(req.user.id, filteredObjects, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  console.log(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+exports.getUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+exports.updateUser = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

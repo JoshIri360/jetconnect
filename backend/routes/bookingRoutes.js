@@ -7,10 +7,16 @@ const authController = require("../controllers/authController");
 
 router
   .route("/")
-  .get(authController.restrictTo("admin"), bookingController.getAllBookings)
-  .post(bookingController.createBooking);
+  .post(authController.protect, bookingController.createBooking)
+  .get(authController.restrictTo("admin"), bookingController.getAllBookings);
 
-router.get("/my-bookings", bookingController.getBookingsByUser);
+router.get(
+  "/my-bookings",
+  authController.protect,
+  bookingController.getBookingsByUser
+);
+
+router.use(authController.restrictTo("admin"));
 
 router
   .route("/:id")
