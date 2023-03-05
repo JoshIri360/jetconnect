@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 const filterObj = (obj, ...allowedFields) => {
@@ -33,12 +34,26 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  const filteredObjects = filterObj(req.body, "name", "email");
+  const userAlreadyExist = async () => {
+    if (req.body.email && (await User.findOne({ email: req.body.email }))) {
+      return true;
+    } else return false;
+  };
 
-  const updatedUser = User.findByIdAndUpdate(req.user.id, filteredObjects, {
-    new: true,
-    runValidators: true,
-  });
+  if (await userAlreadyExist()) {
+    return next(new AppError("A user with that email already exists", 401));
+  }
+
+  const filteredObjects = filterObj(req.body, "firstName", "lastName", "email");
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    filteredObjects,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(200).json({
     status: "success",
@@ -89,5 +104,16 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: "success",
     data: null,
+  });
+});
+
+exports.getCurrentUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
   });
 });

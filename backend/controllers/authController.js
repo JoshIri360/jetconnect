@@ -25,6 +25,16 @@ const setTokenAndCookie = (res, token) => {
   res.cookie("jwt", token, cookieOptions);
 };
 
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    console.log(req.user.role);
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError("Access Denied", 403));
+    }
+    next();
+  };
+};
+
 exports.register = catchAsync(async (req, res, next) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
   const newUser = await User.create({
@@ -111,15 +121,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Access denied" });
-    }
-    next();
-  };
-};
-
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -170,16 +171,19 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({
     passwordResetToken: hashedResetToken,
     passwordResetExpired: { $gt: Date.now() },
-  }).select('+password');
+  }).select("+password");
 
-  console.log(req.body.password, user.password);
   if (!user) {
-    return next(new AppError("Your password reset link has expired", 400));
+    return next(
+      new AppError("Your password reset link has expired or is invalid", 400)
+    );
   }
-  
+
   const correct = await user.correctPassword(req.body.password, user.password);
-  if(correct) {
-    return next(new AppError("You can't use your old password as the new one", 401))
+  if (correct) {
+    return next(
+      new AppError("You can't use your old password as the new one", 401)
+    );
   }
 
   user.password = req.body.password;
@@ -227,11 +231,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     token,
   });
 });
-
-exports.getMe = (req, res, next) => {
-  req.params.id = req.user._id;
-  next();
-};
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   const { firstName, lastName, email } = req.body;

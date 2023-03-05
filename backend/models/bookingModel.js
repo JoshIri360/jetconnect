@@ -39,6 +39,10 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  ticketNumber: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Booking", bookingSchema);

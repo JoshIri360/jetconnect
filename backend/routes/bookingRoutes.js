@@ -5,16 +5,14 @@ const authController = require("../controllers/authController");
 
 // Middleware function to check if user has permission to access a booking
 
+router.use(authController.protect);
+
 router
   .route("/")
-  .post(authController.protect, bookingController.createBooking)
+  .post(bookingController.createBooking)
   .get(authController.restrictTo("admin"), bookingController.getAllBookings);
 
-router.get(
-  "/my-bookings",
-  authController.protect,
-  bookingController.getBookingsByUser
-);
+router.get("/myBookings", bookingController.getBookingsByUser);
 
 router.use(authController.restrictTo("admin"));
 

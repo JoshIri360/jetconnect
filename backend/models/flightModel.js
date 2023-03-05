@@ -4,6 +4,7 @@ const flightSchema = mongoose.Schema({
   flightNumber: {
     type: String,
     required: true,
+    unique: true,
   },
   origin: {
     type: String,
@@ -53,5 +54,6 @@ const flightSchema = mongoose.Schema({
   },
 });
 
+flightSchema.index({ flightNumber: 1 }, { unique: true });
 
 module.exports = mongoose.model("Flight", flightSchema);
