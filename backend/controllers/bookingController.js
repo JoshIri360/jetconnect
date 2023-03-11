@@ -21,7 +21,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
     price: 0,
     ticketNumber: getRandomStr(),
     passengerName:
-      `${req.user.firstName} ${req.user.lastName}` || req.body.passengerName,
+      `${req.body.firstName} ${req.body.lastName}` || req.body.passengerName,
   });
 
   await newBooking.populate("flight").then(async () => {

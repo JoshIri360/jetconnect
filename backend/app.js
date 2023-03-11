@@ -1,10 +1,12 @@
 const express = require("express");
-const helmet = require("helmet");
-const xss = require("xss-clean");
-const mongoSanitize = require("express-mongo-sanitize");
+const morgan = require("morgan"); //Get's the node module
 const rateLimit = require("express-rate-limit");
-const cookieParser = require('cookie-parser');
-
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const hpp = require("hpp"); //Get's the node module
+const compression = require("compression"); //Get's the node module
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -41,6 +43,10 @@ app.use(mongoSanitize());
 
 //Data sanitization against XXS
 app.use(xss());
+
+app.use(hpp());
+
+app.use(compression());
 
 //Cookie Parser for adding JWT to header
 app.use(cookieParser());
