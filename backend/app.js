@@ -61,5 +61,8 @@ app.use((req, res, next) => {
 app.use("/api/v1/users", require("./routes/userRoutes"));
 app.use("/api/v1/flights", require("./routes/flightRoutes"));
 app.use("/api/v1/bookings", require("./routes/bookingRoutes"));
+app.use("/", (req, res, next) => {
+  res.send("Hello");
+});
 
 module.exports = app;

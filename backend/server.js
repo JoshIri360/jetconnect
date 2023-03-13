@@ -9,6 +9,7 @@ dotenv.config({ path: "./config.env" });
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("DB connection successful");
 });
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 

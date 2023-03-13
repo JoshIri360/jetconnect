@@ -26,6 +26,8 @@ exports.getAll = (Model) =>
     let filter = {};
     if (req.params.tourId) filter = { tour: req.params.tourId };
 
+    console.log(req.params);
+
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
@@ -33,6 +35,7 @@ exports.getAll = (Model) =>
       .paginate();
 
     const doc = await features.query;
+
 
     res.status(200).json({
       status: "success",

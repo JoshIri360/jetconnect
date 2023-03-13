@@ -105,3 +105,4 @@ dist
 
 .env
 *.env
+backend/package.json
