@@ -11,7 +11,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // app.use((err, req, res, next) => {
 //   if (err.name === 'MongoServerError' && err.code === 11000) {
