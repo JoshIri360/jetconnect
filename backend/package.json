@@ -4,7 +4,7 @@
   "description": "JetConnect is a web application API that allows users to book and manage flight tickets online. The API will be built using the MERN (MongoDB, Express, React, and Node.js) stack with a microservice architecture to ensure scalability and maintainability. JetConnect will be a personal project aimed at increasing my backend development knowledge and enhancing my programming skills.",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
