@@ -6,7 +6,7 @@ const globalErrorHandler = require("./controllers/errorController");
 dotenv.config({ path: "./config.env" });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI).then(() => {
+mongoose.connect("mongodb+srv://Josh:5g3zQrwVCT3gkiz6@cluster0.ip74bb8.mongodb.net/jetconnect").then(() => {
   console.log("DB connection successful");
 });
 
