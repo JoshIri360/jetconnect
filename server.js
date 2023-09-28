@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const globalErrorHandler = require("./controllers/errorController");
 
-dotenv.config({ path: "./config.env" });
+// dotenv.config({ path: "./config.env" });
+
+const password = process.env.MONGODB_PASSWORD
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://Josh:5g3zQrwVCT3gkiz6@cluster0.ip74bb8.mongodb.net/jetconnect").then(() => {
+mongoose.connect(`mongodb+srv://Josh:${password}@cluster0.ip74bb8.mongodb.net/jetconnect`).then(() => {
   console.log("DB connection successful");
 });
 
