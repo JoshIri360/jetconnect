@@ -9,6 +9,7 @@ const password = process.env.MONGODB_PASSWORD
 
 // Connect to MongoDB
 mongoose.connect(`mongodb+srv://Josh:${password}@cluster0.ip74bb8.mongodb.net/jetconnect`).then(() => {
+  console.log("Welcome back Batman");
   console.log("DB connection successful");
 });
 
